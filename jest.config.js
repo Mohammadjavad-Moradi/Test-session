@@ -19,6 +19,7 @@ module.exports = {
   collectCoverageFrom: [
     "src/**/*.{js,jsx}",
     //"!src/**/*.test.{js,jsx}",
+    "!src/utils/api.js",
     "!src/index.js",
     "!src/serviceWorker.js",
     "!src/setupTests.js",

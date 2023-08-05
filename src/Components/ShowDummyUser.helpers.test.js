@@ -45,14 +45,14 @@ describe('handleClick', () => {
     jest.clearAllMocks();
   })
 
-  it('call setCurrentId with correct argument when currentId is less than 11', () => {
+  it('call setCurrentId with correct argument when currentId is less than 3', () => {
     handleClick({setError, setUser, setCurrentId, currentId: 1})();
 
     expect(setCurrentId).toHaveBeenCalledWith(2);
   });
 
-  it('not calling setCurrentId and fetchUser when currentId is greater than 10', () => {
-    handleClick({setError, setUser, setCurrentId, currentId: 10})();
+  it('not calling setCurrentId and fetchUser when currentId is equal or greater than 3', () => {
+    handleClick({setError, setUser, setCurrentId, currentId: 3})();
 
     expect(setCurrentId).not.toHaveBeenCalled();
   })

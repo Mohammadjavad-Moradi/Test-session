@@ -9,7 +9,7 @@ import ShowDummyUser from './ShowDummyUser';
 jest.mock('../utils/api.js');
 
 describe('ShowDummyUser', () => {
-  it('display initial state of "no user" then show user data after successful fetch', async () => {
+  it('display initial "loading..." then show user data after successful call', async () => {
     // global.fetch = jest.fn(() =>
     //   Promise.resolve({
     //     json: () => Promise.resolve({ id: 1, name: 'John Doe', email: 'john.doe@example.com' }),
@@ -20,9 +20,15 @@ describe('ShowDummyUser', () => {
     
     render(<ShowDummyUser />);
 
-    const noUser = screen.getByRole('heading', {name: /no user/i});
+    const loading = screen.getByRole('heading', {name: /loading.../i});
 
-    expect(noUser).toBeInTheDocument();
+    expect(loading).toBeInTheDocument();
+
+    await waitFor(async () => {
+      const loading = screen.queryByRole('heading', {name: /loading.../i});
+
+      expect(loading).not.toBeInTheDocument();
+    })
 
     await waitFor(async () => {
       const userName = await screen.findByRole('heading', {level: 1, name: /John Doe/i});
@@ -32,6 +38,7 @@ describe('ShowDummyUser', () => {
 
     await waitFor(async () => {
       const userEmail = await screen.findByRole('heading', {level: 2, name: /john.doe@example.com/i});
+
       expect(userEmail).toBeInTheDocument();
     })
   })
@@ -43,7 +50,7 @@ describe('ShowDummyUser', () => {
     render(<ShowDummyUser />);
 
     await waitFor(async () => {
-      const errorMessage = screen.getByRole('heading', {name: /Something went wrong/i});
+      const errorMessage = await screen.findByRole('heading', {name: /Something went wrong/i});
 
       expect(errorMessage).toBeInTheDocument();
     })
@@ -55,12 +62,21 @@ describe('ShowDummyUser', () => {
     //     json: () => Promise.resolve({ id: 1, name: 'John Doe', email: 'john.doe@example.com' }),
     //   })
     // );
-    api.mockResolvedValue({ id: 1, name: 'John Doe', email: 'john.doe@example.com' });
+    const initialUser = { id: 1, name: 'John Doe', email: 'john.doe@example.com' };
+    const newUser = { id: 2, name: 'Adam Smith', email: 'adam.smith@example.com' };
+    api.mockResolvedValueOnce(initialUser).mockResolvedValueOnce(newUser);
 
     render(<ShowDummyUser />);
 
-    const button = screen.getByRole('button', {name: /Get user/i});
+    const button = screen.getByRole('button', {name: /get user/i});
     userEvent.click(button);
+
+    await waitFor(async () => {
+      const userName = await screen.findByRole('heading', {name: 'Adam Smith'});
+
+      expect(userName).toBeInTheDocument();
+    })
+
     userEvent.click(button);
 
     await waitFor(async () => {

@@ -2,7 +2,7 @@ import api from '../utils/api';
 
 export const fetchUser = async ({setUser, setError, currentId}) => {
   try {
-    const res = await api(`https://jsonplaceholder.typicode.com/users/${currentId}`);
+    const res = await api({url: `https://jsonplaceholder.typicode.com/users/${currentId}`});
 
     setUser(res);
   } catch (error) {

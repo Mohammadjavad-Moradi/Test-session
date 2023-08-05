@@ -1,5 +1,4 @@
-const api = async (url, method, body) => {
-
+const api = async ({url, method, body}) => {
   const requestOptions = {
     method: method || (body ? "POST" : "GET")
   };
